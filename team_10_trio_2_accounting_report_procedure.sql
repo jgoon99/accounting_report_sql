@@ -2746,6 +2746,8 @@ DELIMITER ;
 	 OUTPUT:
 		TABLE 1. P&L Statements Report Financial This term over Last with YoY Growth Rate
 		TABLE 2. B/S Report of Financial YEAR and Total of LAST YEAR with YoY Grouwth Rate
+		TABLE 3. B/S Report of standard accounting format with This term over Last YoY Growth Rate
+		TABLE 4. Cash Flow Statements Report
  * ***************************************** */
 CALL team_10_trio_2_account_report(2018, 'Q');
 
