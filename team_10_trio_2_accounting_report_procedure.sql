@@ -99,53 +99,53 @@ CREATE TABLE ychoung_tmp (
 -- Insert into base date for building report
 INSERT 
   INTO	ychoung_tmp(
-				`f_type`, entry_year, entry_month, entry_quater, entry_date, journal_entry_id, journal_entry, line_item, `description`,
-				`account`, `statement`, `debit_is_positive`, `is_balance_sheet_section`, debit, credit, assets, liabilities, equity
-			)
+			`f_type`, entry_year, entry_month, entry_quater, entry_date, journal_entry_id, journal_entry, line_item, `description`,
+			`account`, `statement`, `debit_is_positive`, `is_balance_sheet_section`, debit, credit, assets, liabilities, equity
+		)
 SELECT	0 AS f_type
-			,DATE_FORMAT(b.entry_date, '%Y') AS entry_year 
-			,DATE_FORMAT(b.entry_date, '%Y-%m') AS entry_month
-			,CASE 
-				WHEN MONTH(b.entry_date) BETWEEN 1 AND 3 THEN CONCAT(DATE_FORMAT(b.entry_date, '%Y-'), 'Q1')
-				WHEN MONTH(b.entry_date) BETWEEN 4 AND 6 THEN CONCAT(DATE_FORMAT(b.entry_date, '%Y-'), 'Q2')
-				WHEN MONTH(b.entry_date) BETWEEN 7 AND 9 THEN CONCAT(DATE_FORMAT(b.entry_date, '%Y-'), 'Q3')
-				WHEN MONTH(b.entry_date) BETWEEN 10 AND 12 THEN CONCAT(DATE_FORMAT(b.entry_date, '%Y-'), 'Q4')
-				END AS entry_quater
-			,b.entry_date
-			,a.journal_entry_id
-			,b.journal_entry
-			,a.line_item
-			,a.description
-			,c.`account`
-			,IF(d.statement_section != '', d.statement_section, e.statement_section) AS statement
-			,d.debit_is_positive
-			,d.is_balance_sheet_section
-			,IFNULL(a.debit, 0) AS debit
-			,IFNULL(a.credit, 0) AS credit
-			,ROUND(
-				CASE 
-					WHEN IF(d.statement_section != '', d.statement_section, e.statement_section) IN ('CURRENT ASSETS','FIXED ASSETS') AND credit IS NULL 
-						THEN IFNULL(debit, 0) 
-					WHEN IF(d.statement_section != '', d.statement_section, e.statement_section) IN ('CURRENT ASSETS','FIXED ASSETS') AND debit IS NULL 
-						THEN IFNULL(credit, 0) * -1 
-					ELSE 0 
-				END, 2 ) AS ASSETS
-			,ROUND(
-				CASE 
-					WHEN IF(d.statement_section != '', d.statement_section, e.statement_section) IN ('CURRENT LIABILITIES') AND credit IS NULL 
-						THEN IFNULL(debit, 0) * -1 
-					WHEN IF(d.statement_section != '', d.statement_section, e.statement_section) IN ('CURRENT LIABILITIES') AND debit IS NULL 
-						THEN IFNULL(credit, 0) 
-					ELSE 0 
-				END, 2) AS LIABILITIES
-			,ROUND(
-				CASE 
-					WHEN IF(d.statement_section != '', d.statement_section, e.statement_section) IN ( 'REVENUE', 'OTHER INCOME', 'COST OF GOODS AND SERVICES', 'OTHER EXPENSES', 'SELLING EXPENSES', 'INCOME TAX', 'EQUITY' ) AND credit IS NULL 
-						THEN IFNULL(debit, 0) * -1 
-					WHEN IF(d.statement_section != '', d.statement_section, e.statement_section) IN ( 'REVENUE', 'OTHER INCOME', 'COST OF GOODS AND SERVICES', 'OTHER EXPENSES', 'SELLING EXPENSES', 'INCOME TAX', 'EQUITY' ) AND debit IS NULL 
-						THEN IFNULL(credit, 0) 
-					ELSE 0 
-				END, 2 ) AS EQUITY
+		,DATE_FORMAT(b.entry_date, '%Y') AS entry_year 
+		,DATE_FORMAT(b.entry_date, '%Y-%m') AS entry_month
+		,CASE 
+			WHEN MONTH(b.entry_date) BETWEEN 1 AND 3 THEN CONCAT(DATE_FORMAT(b.entry_date, '%Y-'), 'Q1')
+			WHEN MONTH(b.entry_date) BETWEEN 4 AND 6 THEN CONCAT(DATE_FORMAT(b.entry_date, '%Y-'), 'Q2')
+			WHEN MONTH(b.entry_date) BETWEEN 7 AND 9 THEN CONCAT(DATE_FORMAT(b.entry_date, '%Y-'), 'Q3')
+			WHEN MONTH(b.entry_date) BETWEEN 10 AND 12 THEN CONCAT(DATE_FORMAT(b.entry_date, '%Y-'), 'Q4')
+			END AS entry_quater
+		,b.entry_date
+		,a.journal_entry_id
+		,b.journal_entry
+		,a.line_item
+		,a.description
+		,c.`account`
+		,IF(d.statement_section != '', d.statement_section, e.statement_section) AS statement
+		,d.debit_is_positive
+		,d.is_balance_sheet_section
+		,IFNULL(a.debit, 0) AS debit
+		,IFNULL(a.credit, 0) AS credit
+		,ROUND(
+			CASE 
+				WHEN IF(d.statement_section != '', d.statement_section, e.statement_section) IN ('CURRENT ASSETS','FIXED ASSETS') AND credit IS NULL 
+					THEN IFNULL(debit, 0) 
+				WHEN IF(d.statement_section != '', d.statement_section, e.statement_section) IN ('CURRENT ASSETS','FIXED ASSETS') AND debit IS NULL 
+					THEN IFNULL(credit, 0) * -1 
+				ELSE 0 
+			END, 2 ) AS ASSETS
+		,ROUND(
+			CASE 
+				WHEN IF(d.statement_section != '', d.statement_section, e.statement_section) IN ('CURRENT LIABILITIES') AND credit IS NULL 
+					THEN IFNULL(debit, 0) * -1 
+				WHEN IF(d.statement_section != '', d.statement_section, e.statement_section) IN ('CURRENT LIABILITIES') AND debit IS NULL 
+					THEN IFNULL(credit, 0) 
+				ELSE 0 
+			END, 2) AS LIABILITIES
+		,ROUND(
+			CASE 
+				WHEN IF(d.statement_section != '', d.statement_section, e.statement_section) IN ( 'REVENUE', 'OTHER INCOME', 'COST OF GOODS AND SERVICES', 'OTHER EXPENSES', 'SELLING EXPENSES', 'INCOME TAX', 'EQUITY' ) AND credit IS NULL 
+					THEN IFNULL(debit, 0) * -1 
+				WHEN IF(d.statement_section != '', d.statement_section, e.statement_section) IN ( 'REVENUE', 'OTHER INCOME', 'COST OF GOODS AND SERVICES', 'OTHER EXPENSES', 'SELLING EXPENSES', 'INCOME TAX', 'EQUITY' ) AND debit IS NULL 
+					THEN IFNULL(credit, 0) 
+				ELSE 0 
+			END, 2 ) AS EQUITY
   FROM	journal_entry_line_item AS a
   JOIN	journal_entry AS b
     ON	a.journal_entry_id = b.journal_entry_id
@@ -165,56 +165,56 @@ SELECT	0 AS f_type
 INSERT 
   INTO	ychoung_tmp(`f_type`, comp_no, components) 
 SELECT	1 AS f_type, 0 ,@report_pnl AS components
-			UNION ALL
-			SELECT	1, 1, 'PERIOD'
-			UNION ALL
-			SELECT 	1, 2, @line_break
-			UNION ALL
-			SELECT	1, 3, 'TOTAL REVENUE' 
-			UNION ALL 
-			SELECT	1, 4, 'REVENUE'
-			UNION ALL
-			SELECT	1, 5, 'OTHER INCOME'
-			UNION ALL
-			SELECT	1, 6, @line_break
-			UNION ALL
-			SELECT	1, 7, 'COST OF GOODS AND SERVICES'
-			UNION ALL
-			SELECT	1, 8, 'GROSS PROFIT MARGIN'
-			UNION ALL
-			SELECT	1, 9, 'GROSS PROFIT MARGIN %'
-			UNION ALL
-			SELECT	1, 10, @line_break
-			UNION ALL
-			SELECT	1, 11, 'OEXP'
-			UNION ALL
-			SELECT	1, 12, 'OTHER EXPENSES'
-			UNION ALL
-			SELECT	1, 13, 'SELLING EXPENSES'
-			UNION ALL
-			SELECT	1, 14, @line_break
-			UNION ALL
-			SELECT	1, 15, 'EBITDA MARGIN'
-			UNION ALL
-			SELECT	1, 16, 'EBITDA %'
-			UNION ALL
-			SELECT	1, 17, @line_break
-			UNION ALL
-			SELECT	1, 18, 'Depreciation & Ammortization'
-			UNION ALL
-			SELECT	1, 19, 'EBIT'
-			UNION ALL
-			SELECT	1, 20, 'EBIT %'
-			UNION ALL
-			SELECT	1, 21, @line_break
-			UNION ALL
-			SELECT	1, 22, 'INCOME TAX'
-			UNION ALL
-			SELECT	1, 23, 'NET INCOME'
-			UNION ALL
-			SELECT	1, 24, 'NET INCOME %'
-			UNION ALL
-			SELECT	1, 25, @line_break
+		UNION ALL
+		SELECT	1, 1, 'PERIOD'
+		UNION ALL
+		SELECT 	1, 2, @line_break
+		UNION ALL
+		SELECT	1, 3, 'TOTAL REVENUE' 
+		UNION ALL 
+		SELECT	1, 4, 'REVENUE'
+		UNION ALL
+		SELECT	1, 5, 'OTHER INCOME'
+		UNION ALL
+		SELECT	1, 6, @line_break
+		UNION ALL
+		SELECT	1, 7, 'COST OF GOODS AND SERVICES'
+		UNION ALL
+		SELECT	1, 8, 'GROSS PROFIT MARGIN'
+		UNION ALL
+		SELECT	1, 9, 'GROSS PROFIT MARGIN %'
+		UNION ALL
+		SELECT	1, 10, @line_break
+		UNION ALL
+		SELECT	1, 11, 'OEXP'
+		UNION ALL
+		SELECT	1, 12, 'OTHER EXPENSES'
+		UNION ALL
+		SELECT	1, 13, 'SELLING EXPENSES'
+		UNION ALL
+		SELECT	1, 14, @line_break
+		UNION ALL
+		SELECT	1, 15, 'EBITDA MARGIN'
+		UNION ALL
+		SELECT	1, 16, 'EBITDA %'
+		UNION ALL
+		SELECT	1, 17, @line_break
+		UNION ALL
+		SELECT	1, 18, 'Depreciation & Ammortization'
+		UNION ALL
+		SELECT	1, 19, 'EBIT'
+		UNION ALL
+		SELECT	1, 20, 'EBIT %'
+		UNION ALL
+		SELECT	1, 21, @line_break
+		UNION ALL
+		SELECT	1, 22, 'INCOME TAX'
+		UNION ALL
+		SELECT	1, 23, 'NET INCOME'
+		UNION ALL
+		SELECT	1, 24, 'NET INCOME %'
+		UNION ALL
+		SELECT	1, 25, @line_break
 	;
 
 /* -------------------------------------------------------------------------------------
@@ -231,73 +231,73 @@ SELECT	1 AS f_type, 0 ,@report_pnl AS components
 		SELECT	a.*
 					,b.amount
 		  FROM	(
-					SELECT	2
-								,statement
-								,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
-									WHEN RIGHT(entry_month, 2) = '01' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
-				               WHEN RIGHT(entry_month, 2) = '01' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
-				            END 
-								), 2) AS JAN
-								,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
-									WHEN RIGHT(entry_month, 2) = '02' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
-				               WHEN RIGHT(entry_month, 2) = '02' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
-				            END 
-								), 2) AS FEB
-								,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
-									WHEN RIGHT(entry_month, 2) = '03' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
-				               WHEN RIGHT(entry_month, 2) = '03' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
-				            END 
-								), 2) AS MAR
-								,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
-									WHEN RIGHT(entry_month, 2) = '04' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
-				               WHEN RIGHT(entry_month, 2) = '04' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
-				            END 
-								), 2) AS APL
-								,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
-									WHEN RIGHT(entry_month, 2) = '05' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
-				               WHEN RIGHT(entry_month, 2) = '05' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
-				            END 
-								), 2) AS MAY
-								,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
-									WHEN RIGHT(entry_month, 2) = '06' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
-				               WHEN RIGHT(entry_month, 2) = '06' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
-				            END 
-								), 2) AS JUN
-								,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
-									WHEN RIGHT(entry_month, 2) = '07' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
-				               WHEN RIGHT(entry_month, 2) = '07' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
-				            END 
-								), 2) AS JUL
-								,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
-									WHEN RIGHT(entry_month, 2) = '08' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
-				               WHEN RIGHT(entry_month, 2) = '08' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
-				            END 
-								), 2) AS AUG
-								,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
-									WHEN RIGHT(entry_month, 2) = '09' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
-				               WHEN RIGHT(entry_month, 2) = '09' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
-				            END 
-								), 2) AS SEP
-								,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
-									WHEN RIGHT(entry_month, 2) = '10' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
-				               WHEN RIGHT(entry_month, 2) = '10' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
-				            END 
-								), 2) AS `OCT`
-								,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
-									WHEN RIGHT(entry_month, 2) = '11' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
-				               WHEN RIGHT(entry_month, 2) = '11' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
-				            END 
-								), 2) AS NOV
-								,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
-									WHEN RIGHT(entry_month, 2) = '12' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
-				               WHEN RIGHT(entry_month, 2) = '12' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
-				            END 
-								), 2) AS `DEC`
-					  FROM	ychoung_tmp
-					 WHERE	entry_year = @fn_year 
-					 GROUP
-					 	 BY	statement
-				  	) AS a
+				SELECT	2
+						,statement
+						,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
+							WHEN RIGHT(entry_month, 2) = '01' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
+							WHEN RIGHT(entry_month, 2) = '01' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
+							END 
+						), 2) AS JAN
+						,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
+							WHEN RIGHT(entry_month, 2) = '02' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
+							WHEN RIGHT(entry_month, 2) = '02' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
+							END 
+						), 2) AS FEB
+						,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
+							WHEN RIGHT(entry_month, 2) = '03' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
+							WHEN RIGHT(entry_month, 2) = '03' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
+							END 
+						), 2) AS MAR
+						,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
+							WHEN RIGHT(entry_month, 2) = '04' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
+							WHEN RIGHT(entry_month, 2) = '04' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
+							END 
+						), 2) AS APL
+						,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
+							WHEN RIGHT(entry_month, 2) = '05' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
+							WHEN RIGHT(entry_month, 2) = '05' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
+							END 
+						), 2) AS MAY
+						,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
+							WHEN RIGHT(entry_month, 2) = '06' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
+							WHEN RIGHT(entry_month, 2) = '06' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
+							END 
+						), 2) AS JUN
+						,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
+							WHEN RIGHT(entry_month, 2) = '07' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
+							WHEN RIGHT(entry_month, 2) = '07' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
+							END 
+						), 2) AS JUL
+						,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
+							WHEN RIGHT(entry_month, 2) = '08' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
+							WHEN RIGHT(entry_month, 2) = '08' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
+							END 
+						), 2) AS AUG
+						,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
+							WHEN RIGHT(entry_month, 2) = '09' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
+							WHEN RIGHT(entry_month, 2) = '09' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
+							END 
+						), 2) AS SEP
+						,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
+							WHEN RIGHT(entry_month, 2) = '10' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
+							WHEN RIGHT(entry_month, 2) = '10' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
+							END 
+						), 2) AS `OCT`
+						,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
+							WHEN RIGHT(entry_month, 2) = '11' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
+							WHEN RIGHT(entry_month, 2) = '11' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
+							END 
+						), 2) AS NOV
+						,ROUND(SUM(CASE -- Make a Total Amount Column, merging debits and credits.
+							WHEN RIGHT(entry_month, 2) = '12' AND debit_is_positive = 1 THEN IFNULL(debit, 0) - IFNULL(credit, 0) -- If debit is positive, credit is negative.
+							WHEN RIGHT(entry_month, 2) = '12' AND debit_is_positive = 0 THEN IFNULL(credit, 0) - IFNULL(debit, 0) -- If debit is negative, credit is positive.
+							END 
+						), 2) AS `DEC`
+					FROM	ychoung_tmp
+					WHERE	entry_year = @fn_year 
+					GROUP
+						BY	statement
+				) AS a
 		  LEFT
 		  JOIN	( -- Last year last month. for MoM Growth of Jan
 		  			SELECT	statement
