@@ -43,6 +43,7 @@ DROP PROCEDURE IF EXISTS team_10_trio_2_account_report$$
 CREATE PROCEDURE team_10_trio_2_account_report( IN fn_year INT, IN type_of_report CHAR(1)) 
 BEGIN -- Begin 
 
+
 -- Declare Global Variables
 SET @line_break = '----------------------------'; -- For result grid 
 SET @report_pnl = 'Profit and Loss Report'; -- Report Title
@@ -3112,5 +3113,5 @@ DELIMITER ;
 		TABLE 3. B/S Report of standard accounting format with This term over Last YoY Growth Rate
 		TABLE 4. Cash Flow Statements Report
  * ***************************************** */
-CALL team_10_trio_2_account_report(2018, 'Q');
+CALL team_10_trio_2_account_report(2016, 'Y');
 
