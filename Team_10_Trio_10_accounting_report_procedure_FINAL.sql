@@ -2740,7 +2740,7 @@ SELECT	1 AS f_type, 0 ,@report_pnl AS components
 		CASH FLOW BASE DATA INSERTION
 	 * ************************************************************************************ */
 	-- Insert All account statements of cash flaw statements between this and last year
-	INSERT	
+	INSERT	IGNORE
 	  INTO	ychoung_tmp (f_type, account_bs, Q1, Q2, Q3)
 	SELECT	4 AS f_type -- reporting type
 				,IF(T_ACCOUNT IS NULL, L_ACCOUNT, T_ACCOUNT) AS account_bs -- account base
@@ -2918,7 +2918,7 @@ SELECT	1 AS f_type, 0 ,@report_pnl AS components
 				) AS aa;
 	
 	-- Insert data for cash flow statments report base - net income 
-	INSERT	
+	INSERT	IGNORE
 	  INTO	ychoung_tmp (f_type, account_bs, Q1, Q2, Q3)		
 	SELECT	4
 				,'NET INCOME'
@@ -2945,7 +2945,7 @@ SELECT	1 AS f_type, 0 ,@report_pnl AS components
 		 ON	a.CATEGORY = b.CATEGORY
 	;
 	-- Insert data for Cash flow statement report
-	INSERT
+	INSERT	IGNORE
 	  INTO	ychoung_tmp (f_type, account, account_bs, Q0)
 	SELECT	5, '1. Operating Activities Assets', 'NET INCOME', Q1
 	  FROM	ychoung_tmp 
@@ -3054,6 +3054,7 @@ SELECT	1 AS f_type, 0 ,@report_pnl AS components
 	  FROM	ychoung_tmp
 	 WHERE	f_type = 5 
 	 			AND account IN ('3. Investing Activities')
+	GROUP BY account_bs
 	UNION ALL
 	SELECT	@line_break, @line_break,  @line_break
 	UNION ALL
@@ -3074,6 +3075,7 @@ SELECT	1 AS f_type, 0 ,@report_pnl AS components
 	  FROM	ychoung_tmp
 	 WHERE	f_type = 5 
 	 			AND account IN ('4. Financial Activities')
+	 GROUP BY account_bs
 	UNION ALL
 	SELECT	@line_break, @line_break,  @line_break
 	UNION ALL
